@@ -30,10 +30,8 @@ const LIFF_ID = '2009924458-C1xYyZ35';
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzsR7JEfZ1u7BePMU9PA036qta_S8ntjKQt8dMqBfvy3w6NppeBJKVZoLSkdULAStFK/exec';
 
 liff.init({ liffId: LIFF_ID }).then(() => {
-  // LINE以外から開かれた場合
   if (!liff.isInClient()) {
     document.body.innerHTML = 'LINEから開いてください';
-    return;
   }
 });
 
@@ -49,8 +47,8 @@ async function submitCheck() {
 
   for (const c of checks) {
     await fetch(GAS_URL, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         place: c.value,
         userName: profile.displayName,
@@ -66,3 +64,4 @@ async function submitCheck() {
 
 </body>
 </html>
+``
