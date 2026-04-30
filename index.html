@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+<style>
+body { font-family: sans-serif; padding:16px; }
+h2 { font-size:20px; }
+.item { margin:10px 0; font-size:18px; }
+button {
+  width:100%; padding:15px;
+  font-size:18px; margin-top:20px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>戸締まりチェック</h2>
+
+<div class="item"><label><input type="checkbox" value="正面玄関"> 正面玄関</label></div>
+<div class="item"><label><input type="checkbox" value="通用口"> 通用口</label></div>
+<div class="item"><label><input type="checkbox" value="事務所"> 事務所</label></div>
+
+<button onclick="submitCheck()">確認完了</button>
+
+<script>
+const LIFF_ID = 'ここにLIFF_ID';
+const GAS_URL = 'ここにGASのexec URL';
+
+liff.init({ liffId: LIFF_ID }).then(() => {
+  // LINE以外から開かれた場合
+  if (!liff.isInClient()) {
+    document.body.innerHTML = 'LINEから開いてください';
+    return;
+  }
+});
+
+async function submitCheck() {
+  const checks = document.querySelectorAll('input[type=checkbox]:checked');
+
+  if (checks.length === 0) {
+    alert('チェックしてください');
+    return;
+  }
+
+  const profile = await liff.getProfile();
+
+  for (const c of checks) {
+    await fetch(GAS_URL, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        place: c.value,
+        userName: profile.displayName,
+        userId: profile.userId
+      })
+    });
+  }
+
+  alert('記録しました');
+  liff.closeWindow();
+}
+</script>
+
+</body>
+</html>
